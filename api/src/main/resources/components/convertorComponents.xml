@@ -1,0 +1,37 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+    
+    <bean id = "insuranceclaims.InsuranceClaimConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.InsuranceClaimConvertor">
+    </bean>
+    
+    <bean id = "insuranceclaims.CommonObjectConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.CommonObjectConvertor">   
+    </bean>
+    
+    <bean id = "insuranceclaims.BillConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.BillConvertor">
+    </bean>
+    
+    <bean id = "insuranceclaims.InsuranceClaimDiagnosisConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.InsuranceClaimDiagnosisConvertor">
+    </bean>
+    
+    <bean id = "insuranceclaims.InsuranceClaimItemConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.InsuranceClaimItemConvertor">
+    </bean>
+    
+    <bean id = "insuranceclaims.InsurancePolicyConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.InsurancePolicyConvertor">
+    </bean>
+    
+    <bean id = "insuranceclaims.ProvidedItemConvertor" 
+          class="org.openmrs.module.insuranceclaims.api.model.converter.impl.ProvidedItemConvertor">
+    </bean>
+        
+    </beans>

@@ -1,7 +1,6 @@
 package org.openmrs.module.insuranceclaims.forms.impl;
 
-
-import ca.uhn.fhir.util.DateUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.Patient;
@@ -31,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.text.ParseException;
 
 public class ClaimFormServiceImpl implements ClaimFormService {
 
@@ -127,7 +127,7 @@ public class ClaimFormServiceImpl implements ClaimFormService {
     private List<InsuranceClaimItem> generateClaimItems(Map<String, ProvidedItemInForm> allProvidedItems) {
         List<InsuranceClaimItem> consumptions = new ArrayList<>();
 
-        for (ProvidedItemInForm itemConsumptions:  allProvidedItems.values()) {
+        for (ProvidedItemInForm itemConsumptions : allProvidedItems.values()) {
             List<InsuranceClaimItem> items = getConsumedItemsOfType(itemConsumptions);
             consumptions.addAll(items);
         }
@@ -155,7 +155,7 @@ public class ClaimFormServiceImpl implements ClaimFormService {
     private List<InsuranceClaimDiagnosis> generateClaimDiagnoses(List<String> diagnosesUuidList, InsuranceClaim claim) {
         List<InsuranceClaimDiagnosis> diagnoses = new ArrayList<>();
 
-        for (String uuid: diagnosesUuidList) {
+        for (String uuid : diagnosesUuidList) {
             Concept diagnosisConcept = Context.getConceptService().getConceptByUuid(uuid);
             InsuranceClaimDiagnosis nextDiagnosis = new InsuranceClaimDiagnosis(diagnosisConcept, claim);
             diagnoses.add(nextDiagnosis);
@@ -164,10 +164,14 @@ public class ClaimFormServiceImpl implements ClaimFormService {
     }
 
     private void assignDatesFromFormToClaim(InsuranceClaim claim, NewClaimForm form) {
-        Date startDate = DateUtils.parseDate(form.getStartDate(), FORM_DATE_FORMAT);
-        Date endDate = DateUtils.parseDate(form.getEndDate(), FORM_DATE_FORMAT);
-        claim.setDateFrom(startDate);
-        claim.setDateTo(endDate);
+        try {
+            Date startDate = DateUtils.parseDate(form.getStartDate(), FORM_DATE_FORMAT);
+            Date endDate = DateUtils.parseDate(form.getEndDate(), FORM_DATE_FORMAT);
+            claim.setDateFrom(startDate);
+            claim.setDateTo(endDate);
+        } catch (ParseException exception) {
+            System.out.println(exception.getMessage());
+        }
         claim.setProvider(Context.getProviderService().getProviderByUuid(form.getProvider()));
     }
 

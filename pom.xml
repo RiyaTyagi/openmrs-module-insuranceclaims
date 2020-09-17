@@ -195,7 +195,7 @@
 					<configuration>
 						<configLocation>checkstyle.xml</configLocation>
 					</configuration>
-					<executions>
+                                        <executions>
 						<execution>
 							<id>verify-checkstyle</id>
 							<phase>validate</phase>

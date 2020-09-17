@@ -46,4 +46,11 @@ public class InsuranceClaimServiceImpl extends BaseOpenmrsDataService<InsuranceC
             claimToUpdate.setApprovedTotal(totalBenefit);
         }
     }
+
+    @Override
+    public InsuranceClaim getByUuid(String uuid) throws APIException {
+        return insuranceClaimDao.getByUuid(uuid);
+    }
+    
+    
 }

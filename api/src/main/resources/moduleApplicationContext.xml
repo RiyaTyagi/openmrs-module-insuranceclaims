@@ -24,7 +24,7 @@
     <import resource="classpath:components/clientComponents.xml" />
     <import resource="classpath:components/strategyComponents.xml" />
     <import resource="classpath:components/conceptSetupComponents.xml" />
-
+    <import resource="classpath:components/convertorComponents.xml" />
     <!-- Adds module services to OpenMRS context so it can be accessed
     calling e.g. Context.getService(InsuranceClaimService.class) -->
 

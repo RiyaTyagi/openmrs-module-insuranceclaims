@@ -27,6 +27,8 @@ import java.net.URISyntaxException;
 
 import static org.openmrs.module.insuranceclaims.InsuranceClaimsOmodConstants.CLAIM_ALREADY_SENT_MESSAGE;
 import static org.openmrs.module.insuranceclaims.InsuranceClaimsOmodConstants.CLAIM_NOT_SENT_MESSAGE;
+import org.openmrs.module.insuranceclaims.api.model.converter.impl.BillConvertor;
+import org.openmrs.module.insuranceclaims.api.model.converter.impl.InsuranceClaimConvertor;
 
 @RestController
 @RequestMapping(value = "insuranceclaims/rest/v1")
@@ -43,31 +45,33 @@ public class InsuranceClaimResourceController {
 
     @RequestMapping(value = "/claims", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<InsuranceClaim> createClaim(@RequestBody NewClaimForm form,
+    public String createClaim(@RequestBody NewClaimForm form,
                                                HttpServletRequest request, HttpServletResponse response) throws ResponseException {
         InsuranceClaim claim = claimFormService.createClaim(form);
 
-        ResponseEntity<InsuranceClaim> requestResponse = new ResponseEntity<>(claim, HttpStatus.ACCEPTED);
-        return requestResponse;
+        response.setStatus(HttpStatus.ACCEPTED.value());
+        
+        return new InsuranceClaimConvertor().convert(claim).toJson();
     }
 
     @RequestMapping(value = "/bills", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Bill> createBill(@RequestBody NewClaimForm form,
+    public String createBill(@RequestBody NewClaimForm form,
                                                  HttpServletRequest request, HttpServletResponse response) throws ResponseException {
         Bill bill = claimFormService.createBill(form);
 
-        ResponseEntity<Bill> requestResponse = new ResponseEntity<>(bill, HttpStatus.ACCEPTED);
-        return requestResponse;
+        response.setStatus(HttpStatus.ACCEPTED.value());
+        return new BillConvertor().convert(bill).toJson();
     }
 
     @RequestMapping(value = "/claims", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity get(@RequestParam(value = "claimUuid") String claimUuid,
+    public String get(@RequestParam(value = "claimUuid") String claimUuid,
                               HttpServletRequest request, HttpServletResponse response) throws ResponseException {
         InsuranceClaim claim = insuranceClaimService.getByUuid(claimUuid);
-        ResponseEntity<InsuranceClaim> requestResponse = new ResponseEntity<>(claim, HttpStatus.ACCEPTED);
-        return requestResponse;
+        response.setStatus(HttpStatus.ACCEPTED.value());
+        
+        return new InsuranceClaimConvertor().convert(claim).toJson();
     }
 
     /**
