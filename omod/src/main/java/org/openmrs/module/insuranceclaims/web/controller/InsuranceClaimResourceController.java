@@ -1,5 +1,6 @@
 package org.openmrs.module.insuranceclaims.web.controller;
 
+import ca.uhn.fhir.context.FhirContext;
 import org.openmrs.module.insuranceclaims.api.client.impl.ClaimRequestWrapper;
 import org.openmrs.module.insuranceclaims.api.model.Bill;
 import org.openmrs.module.insuranceclaims.api.model.InsuranceClaim;
@@ -24,11 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URISyntaxException;
+import org.hl7.fhir.dstu3.model.Claim;
+import org.hl7.fhir.exceptions.FHIRException;
 
 import static org.openmrs.module.insuranceclaims.InsuranceClaimsOmodConstants.CLAIM_ALREADY_SENT_MESSAGE;
 import static org.openmrs.module.insuranceclaims.InsuranceClaimsOmodConstants.CLAIM_NOT_SENT_MESSAGE;
 import org.openmrs.module.insuranceclaims.api.model.converter.impl.BillConvertor;
 import org.openmrs.module.insuranceclaims.api.model.converter.impl.InsuranceClaimConvertor;
+import org.openmrs.module.insuranceclaims.api.service.fhir.FHIRInsuranceClaimService;
 
 @RestController
 @RequestMapping(value = "insuranceclaims/rest/v1")
@@ -42,6 +46,9 @@ public class InsuranceClaimResourceController {
 
     @Autowired
     private ExternalApiRequest externalApiRequest;
+    
+    @Autowired
+    private FHIRInsuranceClaimService fhirInsuranceClaimService;
 
     @RequestMapping(value = "/claims", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
@@ -67,11 +74,13 @@ public class InsuranceClaimResourceController {
     @RequestMapping(value = "/claims", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public String get(@RequestParam(value = "claimUuid") String claimUuid,
-                              HttpServletRequest request, HttpServletResponse response) throws ResponseException {
+                              HttpServletRequest request, HttpServletResponse response) throws ResponseException, FHIRException {
         InsuranceClaim claim = insuranceClaimService.getByUuid(claimUuid);
+        Claim claimToSend = fhirInsuranceClaimService.generateClaim(claim);
+        
         response.setStatus(HttpStatus.ACCEPTED.value());
         
-        return new InsuranceClaimConvertor().convert(claim).toJson();
+        return FhirContext.forDstu3().newJsonParser().encodeResourceToString(claimToSend);
     }
 
     /**
